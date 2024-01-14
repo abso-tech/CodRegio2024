@@ -34,8 +34,8 @@ public class IntakeTester extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-       intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        intakeMotorRight = hardwareMap.get(DcMotorEx.class, "intakeMotorRight");
+       intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor2");
+        intakeMotorRight = hardwareMap.get(DcMotorEx.class, "intakeMotorRight2");
         intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         intakeMotorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         intakeMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
