@@ -112,8 +112,8 @@ public class TeleOp extends LinearOpMode {
                 lift.servoR.setPosition(0.63);
             }
             if(gamepad1.dpad_down){
-                lift.servoL.setPosition(0.8);
-                lift.servoR.setPosition(0.8);
+                lift.servoL.setPosition(0.81);
+                lift.servoR.setPosition(0.81);
             }
 
             if(gamepad1.a){

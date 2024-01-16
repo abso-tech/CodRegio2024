@@ -66,6 +66,10 @@ public class RedRightCycle extends LinearOpMode {
     Trajectory pos7;
     Trajectory pos8;
     Trajectory pos9;
+    Trajectory posinspate;
+    Trajectory posint;
+    Trajectory posplace;
+    Trajectory postras;
 
     CASE Case;
 
@@ -98,7 +102,7 @@ public class RedRightCycle extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         CASE cazul = CASE.right;
         cycle = hardwareMap.get(Servo.class,"cycle" );
-        cycle.setPosition(0.3);
+        cycle.setPosition(0.2);
 
 
         while (!isStarted() && !isStopRequested()) {
@@ -127,38 +131,98 @@ public class RedRightCycle extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(46, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(47, -41.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos4= drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(20, -64.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        posinspate= drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(25, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos5= drive.trajectoryBuilder(pos4.end())
-                .lineToLinearHeading(new Pose2d(-62, -64.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4= drive.trajectoryBuilder(posinspate.end())
+                .lineToLinearHeading(new Pose2d(25, -65.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        pos6= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(-62, -38, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
+        posint= drive.trajectoryBuilder(pos4.end())
+                .lineToLinearHeading(new Pose2d(-60, -65.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        pos7= drive.trajectoryBuilder(pos6.end())
-                .lineToLinearHeading(new Pose2d(-64, -38, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(1, () -> {
+
+        pos5 = drive.trajectoryBuilder(posint.end())
+                .lineToLinearHeading(new Pose2d(-59, -37, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        postras = drive.trajectoryBuilder(pos5.end())
+                .lineToLinearHeading(new Pose2d(-63.5, -37, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos6 = drive.trajectoryBuilder(postras.end())
+                .lineToLinearHeading(new Pose2d(-56, -37, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        pos7 = drive.trajectoryBuilder(pos6.end())
+                .lineToLinearHeading(new Pose2d(-63.8, -37, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.1, () -> {
                     collect();
                 })
                 .build();
+        pos8= drive.trajectoryBuilder(pos7.end())
+                .lineToLinearHeading(new Pose2d(-58, -63, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.1, () -> {
+                  exit();
+                })
+                .build();
 
+        pos9= drive.trajectoryBuilder(pos8.end())
+                .lineToLinearHeading(new Pose2d(25, -63, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(3, () -> {
+                    teleop.lift.preload();
+                })
+
+                .addTemporalMarker(4, () -> {
+                    teleop.lift.preloadServo();
+                })
+                .build();
+        posplace= drive.trajectoryBuilder(pos9.end())
+                .lineToLinearHeading(new Pose2d(46.5, -43, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+
+                .build();
 
         drive.followTrajectory(pos1);
         sleep(100);
+        teleop.lift.preload();
         drive.followTrajectory(pos2);
+        teleop.lift.preloadServo();
         drive.followTrajectory(pos3);
-        drive.followTrajectory(pos4);
-        drive.followTrajectory(pos5);
-        drive.followTrajectory(pos6);
         sleep(300);
+        teleop.lift.servoPixel.setPower(1);
+        sleep(500);
+        drive.followTrajectory(posinspate);
+        teleop.lift.RetractServo();
+        sleep(300);
+        teleop.lift.Retract();
+        drive.followTrajectory(pos4);
+        drive.followTrajectory(posint);
+        drive.followTrajectory(pos5);
+        drive.followTrajectory(postras);
+        cycle.setPosition(0.8);
+        sleep(700);
+        drive.followTrajectory(pos6);
+        collect();
+        sleep(200);
+        cycle.setPosition(0.3);
         drive.followTrajectory(pos7);
-        sleep(1000);
+        sleep(200);
+        collect();
+        sleep(3000);
+        exit();
+        drive.followTrajectory(pos8);
+        stopintake();
+        drive.followTrajectory(pos9);
+        drive.followTrajectory(posplace);
+        teleop.lift.servoPixel.setPower(1);
+        sleep(400);
+        teleop.lift.RetractServo();
+        sleep(300);
+        teleop.lift.Retract();
+
+
 
 
     }
@@ -168,6 +232,17 @@ public class RedRightCycle extends LinearOpMode {
         teleop.intake.intakeMotor.setPower(-1);
         teleop.intake.intakeMotorRight.setPower(1);
         teleop.lift.servoPixel.setPower(-1);
+    }
+    public void exit (){
+        teleop.intake.intakeMotor.setPower(-1);
+        teleop.intake.intakeMotorRight.setPower(1);
+        teleop.lift.servoPixel.setPower(-1);
+    }
+
+    public void stopintake (){
+        teleop.intake.intakeMotor.setPower(0);
+        teleop.intake.intakeMotorRight.setPower(0);
+        teleop.lift.servoPixel.setPower(0);
     }
 
 
