@@ -144,6 +144,7 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.dpad_left){
                 intake.intakeMotor.setPower(0);
+                intake.intakeMotorRight.setPower(0);
                 lift.servoPixel.setPower(0);
             }
 
@@ -153,11 +154,13 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.right_trigger>0) {
                 intake.intakeMotor.setPower(-1);
+                intake.intakeMotorRight.setPower(1);
                 lift.servoPixel.setPower(-1);
             }
 
             if(gamepad1.left_trigger>0){
                 intake.intakeMotor.setPower(1);
+                intake.intakeMotorRight.setPower(-1);
                 lift.servoPixel.setPower(0);
             }
 
