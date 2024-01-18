@@ -63,8 +63,8 @@ public class Lift {
         liftRight.setPower(1);
     }
 public void preload(){
-        liftLeft.setTargetPosition(300);
-        liftRight.setTargetPosition(300);
+        liftLeft.setTargetPosition(270);
+        liftRight.setTargetPosition(270);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -72,6 +72,16 @@ public void preload(){
         liftLeft.setPower(1);
         liftRight.setPower(1);
 }
+    public void cycle(){
+        liftLeft.setTargetPosition(350);
+        liftRight.setTargetPosition(350);
+
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        liftLeft.setPower(1);
+        liftRight.setPower(1);
+    }
     public void Low(){
         servoL.setPosition(0.05);
         servoR.setPosition(0.05);

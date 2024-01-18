@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Airplane;
@@ -37,12 +38,12 @@ public class TeleOp extends LinearOpMode {
     public static double targetPosition;
 
 
-
+boolean liftrequest,retractrequest;
     Drivetrain drive =new Drivetrain();
     public Horizontal intake = new Horizontal();
     Airplane airplane = new Airplane();
     Hanging hang = new Hanging();
-
+Servo cycle;
     public Lift lift = new Lift();
     enum State {
         INIT,
@@ -54,12 +55,15 @@ public class TeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         ElapsedTime liftRequest = new ElapsedTime();
         ElapsedTime retractRequest = new ElapsedTime();
+        liftrequest=false;
+        retractrequest=false;
         drive.initDrivetrain(hardwareMap);
         lift.initLiftTeleOp(hardwareMap);
         hang.initHang(hardwareMap);
         intake.intakeinit(hardwareMap);
         airplane.initAirplane(hardwareMap);
-
+        cycle = hardwareMap.get(Servo.class,"cycle" );
+        cycle.setPosition(0.15);
         TelemetryPacket packet = new TelemetryPacket();
         dashboard.setTelemetryTransmissionInterval(25);
         targetPosition=0;
@@ -104,45 +108,29 @@ public class TeleOp extends LinearOpMode {
             drive.LF.setPower(forward + strafe - rotate);
 
 
-            if(gamepad1.b){
+            if(gamepad2.y && liftrequest==false){
                 targetPosition=550;
+                liftRequest.reset();
+                liftrequest=true;
             }
-            if(gamepad1.dpad_up){
+            if(liftRequest.milliseconds()>800 && liftrequest){
                 lift.servoL.setPosition(0.63);
                 lift.servoR.setPosition(0.63);
+                liftrequest=false;
             }
-            if(gamepad1.dpad_down){
+            if(retractRequest.milliseconds()>1500 && retractrequest){
+                targetPosition=-250;
+                retractrequest=false;
+            }
+
+            if(gamepad2.a && retractrequest==false){
                 lift.servoL.setPosition(0.81);
                 lift.servoR.setPosition(0.81);
+                retractrequest=true;
             }
 
-            if(gamepad1.a){
-                targetPosition=-250;
 
-            }
-
-            if(gamepad2.dpad_left){
-                airplane.AirplaneLaunch.setPosition(0.3);
-
-            }
-
-            if(gamepad2.dpad_down){
-                airplane.AirplaneUAD.setPosition(0.49);
-
-            }
-
-            if(gamepad2.dpad_up){
-                hang.LeftHang.setPosition(0);
-                hang.RightHang.setPosition(0);
-
-            }
-            if(gamepad2.dpad_right){
-                hang.LeftHang.setPosition(1);
-                hang.RightHang.setPosition(1);
-
-            }
-
-            if(gamepad1.dpad_left){
+            if(gamepad2.touchpad){
                 intake.intakeMotor.setPower(0);
                 intake.intakeMotorRight.setPower(0);
                 lift.servoPixel.setPower(0);
@@ -152,22 +140,20 @@ public class TeleOp extends LinearOpMode {
                 targetPosition=targetPosition+30;
             }
 
-            if(gamepad1.right_trigger>0) {
+            if(gamepad2.right_trigger>0) {
                 intake.intakeMotor.setPower(-1);
                 intake.intakeMotorRight.setPower(1);
                 lift.servoPixel.setPower(-1);
             }
 
-            if(gamepad1.left_trigger>0){
+            if(gamepad2.left_trigger>0){
                 intake.intakeMotor.setPower(1);
                 intake.intakeMotorRight.setPower(-1);
                 lift.servoPixel.setPower(0);
             }
 
-            if(gamepad1.x){
-                lift.servoPixel.setPower(1);
-            }
-            if(gamepad1.y){
+
+            if(gamepad2.b){
                 lift.servoPixel.setPower(1);
             }
 
