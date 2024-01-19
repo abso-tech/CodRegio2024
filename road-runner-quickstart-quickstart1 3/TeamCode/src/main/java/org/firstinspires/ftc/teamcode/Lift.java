@@ -43,8 +43,8 @@ public class Lift {
     }
 
     public void preloadServo(){
-        servoL.setPosition(0.63);
-        servoR.setPosition(0.63);
+        servoL.setPosition(0.62);
+        servoR.setPosition(0.62);
     }
 
     public void RetractServo(){

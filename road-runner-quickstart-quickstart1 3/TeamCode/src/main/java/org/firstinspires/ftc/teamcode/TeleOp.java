@@ -157,6 +157,12 @@ Servo cycle;
                 lift.servoPixel.setPower(1);
             }
 
+            if(gamepad2.dpad_up){
+                hang.LeftHang.setPosition(0);
+                hang.RightHang.setPosition(0);
+            }
+
+
             packet.put("positionRight", lift.liftLeft.getCurrentPosition());
             packet.put("positionRight", lift.liftRight.getCurrentPosition());
             packet.put("errorRight", lastError);

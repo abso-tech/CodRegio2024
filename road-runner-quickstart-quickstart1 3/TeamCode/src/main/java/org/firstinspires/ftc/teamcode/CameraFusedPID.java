@@ -47,6 +47,14 @@ public class CameraFusedPID extends LinearOpMode {
     public static final double focalLength = 728;  // Replace with the focal length of the camera in pixels
 
 
+     enum Location{
+         Left,
+         Center,
+         Right
+     }
+
+
+
     @Override
     public void runOpMode() {
 
@@ -151,6 +159,19 @@ public class CameraFusedPID extends LinearOpMode {
             return yellowMask;
         }
 
+        public int ReturnLocation(){
+            if(cX<197) {
+                return 3;
+
+            } else if (cX>407) {
+                return 1;
+            }
+
+            else {
+                return 2;
+
+            }
+        }
         private MatOfPoint findLargestContour(List<MatOfPoint> contours) {
             double maxArea = 0;
             MatOfPoint largestContour = null;

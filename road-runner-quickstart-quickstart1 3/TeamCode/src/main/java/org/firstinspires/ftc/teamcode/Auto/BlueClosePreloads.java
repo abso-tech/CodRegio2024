@@ -42,13 +42,13 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name ="🛑RedClosePreloads", group = "CENTERSTAGE")
+@Autonomous(name ="🟦BlueClosePreloads", group = "CENTERSTAGE")
 
-public class RedRightPreloads extends LinearOpMode {
+public class BlueClosePreloads extends LinearOpMode {
 
     SampleMecanumDrive drive;
     TeleOp teleop = new TeleOp();
-    Pose2d startPose = new Pose2d(11, -64.5, Math.toRadians(90));
+    Pose2d startPose = new Pose2d(11, 64.5, Math.toRadians(270));
 
     Trajectory pos1;
     Trajectory pos2;
@@ -84,7 +84,9 @@ public class RedRightPreloads extends LinearOpMode {
     double width = 0;
 
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    /** MAKE SURE TO CHANGE THE FOV AND THE RESOLUTIONS ACCORDINGLY **/
+    /**
+     * MAKE SURE TO CHANGE THE FOV AND THE RESOLUTIONS ACCORDINGLY
+     **/
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
     private static final double FOV = 40;
@@ -94,13 +96,11 @@ public class RedRightPreloads extends LinearOpMode {
     public static final double focalLength = 728;  // Replace with the focal length of the camera in pixels
 
 
-    enum Location{
+    enum Location {
         Left,
         Center,
         Right
     }
-
-
 
 
     public enum CASE {
@@ -109,12 +109,13 @@ public class RedRightPreloads extends LinearOpMode {
         right
     }
 
-    int cazzz=2;
-   PropPipeline PropPipeline = new PropPipeline();
+    int cazzz = 2;
+    PropPipeline PropPipeline = new PropPipeline();
 
 
     public static double targetPosition = 0;
     TeamPropPipelineRed teamPropPieline = new TeamPropPipelineRed();
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -123,22 +124,22 @@ public class RedRightPreloads extends LinearOpMode {
         teleop.intake.intakeinit(hardwareMap);
         drive.setPoseEstimate(startPose);
         CASE cazul = CASE.right;
-        cycle = hardwareMap.get(Servo.class,"cycle" );
+        cycle = hardwareMap.get(Servo.class, "cycle");
         cycle.setPosition(0.15);
         initOpenCV();
 
         while (opModeInInit()) {
             telemetry.addData("Target IMU Angle", getAngleTarget(cX));
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
-            if(cX<400 && cX>150 ) {
-            cazzz=2;
+            if (cX < 400 && cX > 150) {
+                cazzz = 2;
                 telemetry.addData("caz", "Center");
             }
-            if(cX>420 ) {
-                cazzz=3;
+            if (cX > 420) {
+                cazzz = 3;
                 telemetry.addData("caz", "Right");
-            } else if (cX<200){
-                cazzz=1;
+            } else if (cX < 200) {
+                cazzz = 1;
                 telemetry.addData("caz", "Left");
             }
             telemetry.update();
@@ -146,43 +147,31 @@ public class RedRightPreloads extends LinearOpMode {
         }
 
 
-        if(opModeIsActive() && !isStopRequested()) {
-            if(cazzz==3){
-                right();
-            }
-
-            if(cazzz==2){
-                center();
-            }
-            if(cazzz==1){
-                left();
-            }
+        if (opModeIsActive() && !isStopRequested()) {
+            center();
         }
 
 
-
     }
 
 
-    public void center(){
+    public void center() {
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(8, -35, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(10, 35, Math.toRadians(260)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(5, -46, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(12, 46, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
-        pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(48.3, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos3 = drive.trajectoryBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(50, 34.8, Math.toRadians(1)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos4= drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(43, -20, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4 = drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(43, 15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
-
 
 
         drive.followTrajectory(pos1);
@@ -199,71 +188,28 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(500);
         teleop.lift.Retract();
         teleop.lift.servoPixel.setPower(0);
-        sleep(20000);
-
-
-
-    }
-
-    public void right(){
-        pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(11, -35, Math.toRadians(45)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(8, -50, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-
-        pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(47.8, -47.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        pos4= drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(42, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-
-
-
-        drive.followTrajectory(pos1);
-        sleep(100);
-        teleop.lift.preload();
-        drive.followTrajectory(pos2);
-        teleop.lift.preloadServo();
-        drive.followTrajectory(pos3);
-        sleep(400);
-        teleop.lift.servoPixel.setPower(0.7);
-        sleep(2000);
-        drive.followTrajectory(pos4);
-        teleop.lift.RetractServo();
-        sleep(500);
-        teleop.lift.Retract();
-        teleop.lift.servoPixel.setPower(0);
-        sleep(1500);
-
+        sleep(3000);
 
 
     }
-    public void left(){
+
+    public void right() {
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(1, -37.5, Math.toRadians(134)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(11, -35, Math.toRadians(45)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(12, -45, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(8, -50, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
-        pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(49, -33, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos3 = drive.trajectoryBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(47.8, -47.7, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos4= drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(43, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4 = drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(42, -15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
-
 
 
         drive.followTrajectory(pos1);
@@ -283,29 +229,64 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(1500);
 
 
+    }
+
+    public void left() {
+        pos1 = drive.trajectoryBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(1, -37.5, Math.toRadians(134)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos2 = drive.trajectoryBuilder(pos1.end())
+                .lineToLinearHeading(new Pose2d(12, -45, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+
+        pos3 = drive.trajectoryBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(49, -33, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos4 = drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(43, -15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+
+        drive.followTrajectory(pos1);
+        sleep(100);
+        teleop.lift.preload();
+        drive.followTrajectory(pos2);
+        teleop.lift.preloadServo();
+        drive.followTrajectory(pos3);
+        sleep(400);
+        teleop.lift.servoPixel.setPower(0.7);
+        sleep(2000);
+        drive.followTrajectory(pos4);
+        teleop.lift.RetractServo();
+        sleep(500);
+        teleop.lift.Retract();
+        teleop.lift.servoPixel.setPower(0);
+        sleep(1500);
+
 
     }
 
 
-    public void collect (){
+    public void collect() {
         teleop.intake.intakeMotor.setPower(-1);
         teleop.intake.intakeMotorRight.setPower(1);
         teleop.lift.servoPixel.setPower(-1);
     }
-    public void exit (){
+
+    public void exit() {
         teleop.intake.intakeMotor.setPower(-1);
         teleop.intake.intakeMotorRight.setPower(1);
         teleop.lift.servoPixel.setPower(-1);
     }
 
-    public void stopintake (){
+    public void stopintake() {
         teleop.intake.intakeMotor.setPower(0);
         teleop.intake.intakeMotorRight.setPower(0);
         teleop.lift.servoPixel.setPower(0);
     }
-
-
-
 
 
     private void initOpenCV() {
@@ -318,11 +299,12 @@ public class RedRightPreloads extends LinearOpMode {
         controlHubCam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        controlHubCam.setPipeline(new RedRightPreloads.YellowBlobDetectionPipeline());
+        controlHubCam.setPipeline(new BlueClosePreloads.YellowBlobDetectionPipeline());
 
         controlHubCam.openCameraDevice();
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPSIDE_DOWN);
     }
+
     class YellowBlobDetectionPipeline extends OpenCvPipeline {
         @Override
         public Mat processFrame(Mat input) {
@@ -363,24 +345,26 @@ public class RedRightPreloads extends LinearOpMode {
 
             return input;
         }
-
-        private Mat preprocessFrame(Mat frame) {
-            Mat hsvFrame = new Mat();
-            Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
-
-            Scalar lowerYellow = new Scalar(100, 100, 100);
-            Scalar upperYellow = new Scalar(180, 255, 255);
+    }
 
 
-            Mat yellowMask = new Mat();
-            Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
+    private Mat preprocessFrame(Mat frame) {
+        Mat hsvFrame = new Mat();
+        Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
-            Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_OPEN, kernel);
-            Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_CLOSE, kernel);
+        Scalar lowerYellow = new Scalar(100, 100, 100);
+        Scalar upperYellow = new Scalar(180, 255, 255);
 
-            return yellowMask;
-        }
+
+        Mat yellowMask = new Mat();
+        Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
+
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
+        Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_OPEN, kernel);
+        Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_CLOSE, kernel);
+
+        return yellowMask;
+    }
 
         public int ReturnLocation(){
             if(cX<197) {
@@ -414,7 +398,7 @@ public class RedRightPreloads extends LinearOpMode {
             return boundingRect.width;
         }
 
-    }
+
     public static double getAngleTarget(double objMidpoint){
         double midpoint = -((objMidpoint - (CAMERA_WIDTH/2))*FOV)/CAMERA_WIDTH;
         return midpoint;
