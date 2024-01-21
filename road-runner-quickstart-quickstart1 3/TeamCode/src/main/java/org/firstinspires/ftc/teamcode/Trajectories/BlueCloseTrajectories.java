@@ -89,4 +89,23 @@ public class BlueCloseTrajectories {
     }
 
 
+    public enum Case{
+        Left, Center, Right
+    }
+
+   public void BetterBlueTrajectoriesInit(SampleMecanumDrive drive,int Detection){
+    switch (Detection){
+        case 1:
+            Left();
+            break;
+        case 2:
+           Center();
+            break;
+        case 3:
+            Right();
+            break;
+    }
+
+    }
+
 }
