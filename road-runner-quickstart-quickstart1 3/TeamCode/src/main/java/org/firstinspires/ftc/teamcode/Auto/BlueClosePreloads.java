@@ -42,7 +42,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name ="🟦BlueClosePreloads", group = "CENTERSTAGE")
+@Autonomous(name ="🟦BlueClose", group = "CENTERSTAGE")
 
 public class BlueClosePreloads extends LinearOpMode {
 
@@ -131,24 +131,35 @@ public class BlueClosePreloads extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addData("Target IMU Angle", getAngleTarget(cX));
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
-            if (cX < 400 && cX > 150) {
-                cazzz = 2;
+            if(cX<400 && cX>150 ) {
+                cazzz=2;
                 telemetry.addData("caz", "Center");
             }
-            if (cX > 420) {
-                cazzz = 3;
+            if(cX>420 ) {
+                cazzz=3;
                 telemetry.addData("caz", "Right");
-            } else if (cX < 200) {
-                cazzz = 1;
+            } else if (cX<200){
+                cazzz=1;
                 telemetry.addData("caz", "Left");
             }
+            telemetry.update();
+
             telemetry.update();
 
         }
 
 
-        if (opModeIsActive() && !isStopRequested()) {
-            center();
+        if(opModeIsActive() && !isStopRequested()) {
+            if(cazzz==3){
+                right();
+            }
+
+            if(cazzz==2){
+                center();
+            }
+            if(cazzz==1){
+                left();
+            }
         }
 
 
@@ -161,16 +172,16 @@ public class BlueClosePreloads extends LinearOpMode {
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(12, 46, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(12, 48, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         pos3 = drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(50, 34.8, Math.toRadians(1)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(49.6, 34.8, Math.toRadians(1)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos4 = drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(43, 15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(41, 15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -195,20 +206,20 @@ public class BlueClosePreloads extends LinearOpMode {
 
     public void right() {
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(11, -35, Math.toRadians(45)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(2, 35, Math.toRadians(250)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(8, -50, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(8, 51, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         pos3 = drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(47.8, -47.7, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(47.8, 40, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos4 = drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(42, -15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(40, 15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -233,20 +244,20 @@ public class BlueClosePreloads extends LinearOpMode {
 
     public void left() {
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(1, -37.5, Math.toRadians(134)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(14, 37.5, Math.toRadians(300)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(12, -45, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(12, 45, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         pos3 = drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(49, -33, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(48, 42, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos4 = drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(43, -15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(40, 15, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -302,7 +313,7 @@ public class BlueClosePreloads extends LinearOpMode {
         controlHubCam.setPipeline(new BlueClosePreloads.YellowBlobDetectionPipeline());
 
         controlHubCam.openCameraDevice();
-        controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPSIDE_DOWN);
+        controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
     class YellowBlobDetectionPipeline extends OpenCvPipeline {
@@ -321,7 +332,7 @@ public class BlueClosePreloads extends LinearOpMode {
 
             if (largestContour != null) {
                 // Draw a red outline around the largest detected object
-                Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(255, 0, 0), 2);
+                Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(0, 255, 0), 2);
                 // Calculate the width of the bounding box
                 width = calculateWidth(largestContour);
 
@@ -354,7 +365,6 @@ public class BlueClosePreloads extends LinearOpMode {
 
         Scalar lowerYellow = new Scalar(100, 100, 100);
         Scalar upperYellow = new Scalar(180, 255, 255);
-
 
         Mat yellowMask = new Mat();
         Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);

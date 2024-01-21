@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.CameraFusedPID;
-import org.firstinspires.ftc.teamcode.Globals;
-import org.firstinspires.ftc.teamcode.Location;
 import org.firstinspires.ftc.teamcode.PIDConstants;
 import org.firstinspires.ftc.teamcode.PropPipeline;
 import org.firstinspires.ftc.teamcode.TeamPropPipelineRed;
@@ -23,8 +19,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.VisionPortalImpl;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -42,9 +36,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name ="🛑RedClosePreloads", group = "CENTERSTAGE")
+@Autonomous(name ="🛑RedLeft", group = "CENTERSTAGE")
 
-public class RedRightPreloads extends LinearOpMode {
+public class RedLeft extends LinearOpMode {
 
     SampleMecanumDrive drive;
     TeleOp teleop = new TeleOp();
@@ -110,7 +104,7 @@ public class RedRightPreloads extends LinearOpMode {
     }
 
     int cazzz=2;
-   PropPipeline PropPipeline = new PropPipeline();
+    PropPipeline PropPipeline = new PropPipeline();
 
 
     public static double targetPosition = 0;
@@ -178,12 +172,9 @@ public class RedRightPreloads extends LinearOpMode {
         pos3= drive.trajectoryBuilder(pos2.end())
                 .lineToLinearHeading(new Pose2d(48.3, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        pos5= drive.trajectoryBuilder(pos3.end())
-                .back(4)
-                .build();
 
-        pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4= drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(43, -20, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -193,18 +184,6 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(100);
         teleop.lift.preload();
         drive.followTrajectory(pos2);
-        teleop.lift.preloadServo();
-        drive.followTrajectory(pos3);
-        sleep(400);
-        teleop.lift.servoPixel.setPower(0.7);
-        sleep(2000);
-        drive.followTrajectory(pos5);
-        drive.followTrajectory(pos4);
-        teleop.lift.RetractServo();
-        sleep(500);
-        teleop.lift.Retract();
-        teleop.lift.servoPixel.setPower(0);
-        sleep(20000);
 
 
 
@@ -221,14 +200,11 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(47.5, -47.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(47.8, -47.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos5= drive.trajectoryBuilder(pos3.end())
-                .back(4)
-                .build();
-        pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4= drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(42, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -236,27 +212,13 @@ public class RedRightPreloads extends LinearOpMode {
 
         drive.followTrajectory(pos1);
         sleep(100);
-        teleop.lift.preload();
-        drive.followTrajectory(pos2);
-        teleop.lift.preloadServo();
-        drive.followTrajectory(pos3);
-        sleep(400);
-        teleop.lift.servoPixel.setPower(0.7);
-        sleep(2000);
-        drive.followTrajectory(pos5);
-        drive.followTrajectory(pos4);
-        teleop.lift.RetractServo();
-        sleep(500);
-        teleop.lift.Retract();
-        teleop.lift.servoPixel.setPower(0);
-        sleep(1500);
 
 
 
     }
     public void left(){
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(1, -37.5, Math.toRadians(134)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(5, -37.5, Math.toRadians(134)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
@@ -265,16 +227,11 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(48.6, -33, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(49, -33, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos5= drive.trajectoryBuilder(pos3.end())
-                .back(4)
-                .build();
-
-
-        pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4= drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(43, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -282,20 +239,7 @@ public class RedRightPreloads extends LinearOpMode {
 
         drive.followTrajectory(pos1);
         sleep(100);
-        teleop.lift.preload();
-        drive.followTrajectory(pos2);
-        teleop.lift.preloadServo();
-        drive.followTrajectory(pos3);
-        sleep(400);
-        teleop.lift.servoPixel.setPower(0.7);
-        sleep(2000);
-        drive.followTrajectory(pos5);
-        drive.followTrajectory(pos4);
-        teleop.lift.RetractServo();
-        sleep(500);
-        teleop.lift.Retract();
-        teleop.lift.servoPixel.setPower(0);
-        sleep(1500);
+
 
 
 
@@ -333,7 +277,7 @@ public class RedRightPreloads extends LinearOpMode {
         controlHubCam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        controlHubCam.setPipeline(new RedRightPreloads.YellowBlobDetectionPipeline());
+        controlHubCam.setPipeline(new RedLeft.YellowBlobDetectionPipeline());
 
         controlHubCam.openCameraDevice();
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPSIDE_DOWN);

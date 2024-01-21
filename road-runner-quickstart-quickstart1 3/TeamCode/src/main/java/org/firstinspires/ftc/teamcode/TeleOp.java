@@ -41,7 +41,7 @@ public class TeleOp extends LinearOpMode {
 boolean liftrequest,retractrequest;
     Drivetrain drive =new Drivetrain();
     public Horizontal intake = new Horizontal();
-    Airplane airplane = new Airplane();
+   public  Airplane airplane = new Airplane();
     Hanging hang = new Hanging();
 Servo cycle;
     public Lift lift = new Lift();
@@ -118,14 +118,14 @@ Servo cycle;
                 lift.servoR.setPosition(0.63);
                 liftrequest=false;
             }
-            if(retractRequest.milliseconds()>1500 && retractrequest){
+            if(retractRequest.milliseconds()>2000 && retractrequest){
                 targetPosition=-250;
                 retractrequest=false;
             }
 
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.81);
-                lift.servoR.setPosition(0.81);
+                lift.servoL.setPosition(0.828);
+                lift.servoR.setPosition(0.828);
                 retractrequest=true;
             }
 
@@ -155,6 +155,14 @@ Servo cycle;
 
             if(gamepad2.b){
                 lift.servoPixel.setPower(1);
+            }
+
+            if(gamepad1.dpad_down){
+               airplane.AirplaneUAD.setPosition(0.25);
+            }
+
+            if(gamepad1.dpad_left){
+                airplane.AirplaneLaunch.setPosition(0.5);
             }
 
             if(gamepad2.dpad_up){
