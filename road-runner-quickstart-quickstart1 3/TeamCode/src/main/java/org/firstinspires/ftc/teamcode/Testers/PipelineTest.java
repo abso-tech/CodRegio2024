@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Detection.Globals;
+import org.firstinspires.ftc.teamcode.Detection.Location;
+import org.firstinspires.ftc.teamcode.Detection.PropPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous(name = "PipelineTest")

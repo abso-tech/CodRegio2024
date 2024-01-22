@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Detection;
 
-import static org.firstinspires.ftc.teamcode.Globals.ALLIANCE;
-import static org.firstinspires.ftc.teamcode.Globals.SIDE;
+import static org.firstinspires.ftc.teamcode.Detection.Globals.ALLIANCE;
+import static org.firstinspires.ftc.teamcode.Detection.Globals.SIDE;
 
 import android.graphics.Canvas;
 
