@@ -124,8 +124,8 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.828);
-                lift.servoR.setPosition(0.828);
+                lift.servoL.setPosition(0.785);
+                lift.servoR.setPosition(0.785);
                 retractrequest=true;
             }
 
@@ -141,13 +141,13 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad2.right_trigger>0) {
-                intake.intakeMotor.setPower(-1);
+                intake.intakeMotor.setPower(1);
                 intake.intakeMotorRight.setPower(1);
                 lift.servoPixel.setPower(-1);
             }
 
             if(gamepad2.left_trigger>0){
-                intake.intakeMotor.setPower(1);
+                intake.intakeMotor.setPower(-1);
                 intake.intakeMotorRight.setPower(-1);
                 lift.servoPixel.setPower(0);
             }

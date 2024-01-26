@@ -134,10 +134,11 @@ public class RedRightPreloads extends LinearOpMode {
                 .enableLiveView(true)
                 .build();
 
+
         int detectionCase = 1;
 
         while (opModeInInit()) {
-            dashboard.setTelemetryTransmissionInterval(25);
+            dashboard.setTelemetryTransmissionInterval(55);
             detectionCase= processor.detection;
             telemetry.addData("Detection", processor.detection);
             telemetry.update();
@@ -146,14 +147,14 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         if(opModeIsActive() && !isStopRequested()) {
-            if(cazzz==3){
+            if(processor.detection==3){
                 right();
             }
 
-            if(cazzz==2){
+            if(processor.detection==2){
                 center();
             }
-            if(cazzz==1){
+            if(processor.detection==1){
                 left();
             }
         }
