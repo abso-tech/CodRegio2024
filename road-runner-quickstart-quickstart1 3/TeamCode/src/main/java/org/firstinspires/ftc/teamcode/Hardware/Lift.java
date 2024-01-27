@@ -35,8 +35,8 @@ public class Lift {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
-        servoL.setPosition(0.785);
-        servoR.setPosition(0.785);
+        servoL.setPosition(0.814);
+        servoR.setPosition(0.814);
 
 
 
@@ -63,8 +63,8 @@ public class Lift {
         liftRight.setPower(1);
     }
 public void preload(){
-        liftLeft.setTargetPosition(270);
-        liftRight.setTargetPosition(270);
+        liftLeft.setTargetPosition(280);
+        liftRight.setTargetPosition(280);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -126,8 +126,8 @@ public void preload(){
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
-        servoL.setPosition(0.785);
-        servoR.setPosition(0.785);
+        servoL.setPosition(0.814);
+        servoR.setPosition(0.814);
 
 
     }

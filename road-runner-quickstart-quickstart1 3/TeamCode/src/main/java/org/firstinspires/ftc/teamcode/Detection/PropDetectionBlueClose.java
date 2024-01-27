@@ -28,7 +28,7 @@ public class PropDetectionBlueClose implements VisionProcessor {
     public static int middleRectX2 = 600, middleRectY2 = 340;
 
 
-    public static double middleThresh = 60000;
+    public static double middleThresh = 180000;
     public double middleSum = 0;
 
     public static int blueLowH = 100, blueLowS = 40, blueLowV = 0;
@@ -58,7 +58,7 @@ public class PropDetectionBlueClose implements VisionProcessor {
         Imgproc.rectangle(frame, rightRect, new Scalar(0,255,0), 5);
         Imgproc.rectangle(frame, middleRect, new Scalar(0,255,0), 5);
 
-        if(rightSum < rightThresh)
+        if(rightSum < rightThresh&& rightSum<400000 )
             detection = 1;
         else if (middleSum > middleThresh)
             detection = 2;

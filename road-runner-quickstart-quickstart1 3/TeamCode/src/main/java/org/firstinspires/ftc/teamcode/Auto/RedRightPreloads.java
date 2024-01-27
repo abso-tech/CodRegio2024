@@ -123,12 +123,12 @@ public class RedRightPreloads extends LinearOpMode {
         teleop.airplane.initAirplane(hardwareMap);
         drive.setPoseEstimate(startPose);
         CASE cazul = CASE.right;
-        cycle = hardwareMap.get(Servo.class,"cycle" );
+        cycle = hardwareMap.get(Servo.class, "cycle");
         cycle.setPosition(0.15);
         processor = new PropDetectionRedClose();
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new android.util.Size(1280,720))
+                .setCameraResolution(new android.util.Size(1280, 720))
                 .enableLiveView(true)
                 .addProcessor(processor)
                 .enableLiveView(true)
@@ -139,22 +139,23 @@ public class RedRightPreloads extends LinearOpMode {
 
         while (opModeInInit()) {
             dashboard.setTelemetryTransmissionInterval(55);
-            detectionCase= processor.detection;
+            detectionCase = processor.detection;
             telemetry.addData("Detection", processor.detection);
             telemetry.update();
 
         }
 
+        waitForStart();
 
-        if(opModeIsActive() && !isStopRequested()) {
-            if(processor.detection==3){
+        if (opModeIsActive() && !isStopRequested()) {
+            if (processor.detection == 3) {
                 right();
             }
 
-            if(processor.detection==2){
+            if (processor.detection == 2) {
                 center();
             }
-            if(processor.detection==1){
+            if (processor.detection == 1) {
                 left();
             }
         }
@@ -175,14 +176,14 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(48.3, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(47.6, -41, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         pos5= drive.trajectoryBuilder(pos3.end())
-                .back(4)
+                .back(5)
                 .build();
 
         pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(39, -62, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -203,7 +204,7 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(500);
         teleop.lift.Retract();
         teleop.lift.servoPixel.setPower(0);
-        sleep(20000);
+        sleep(28000);
 
 
 
@@ -220,14 +221,14 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(47.5, -47.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(47.8, -47, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos5= drive.trajectoryBuilder(pos3.end())
                 .back(4)
                 .build();
         pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(39, -62, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -248,7 +249,7 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(500);
         teleop.lift.Retract();
         teleop.lift.servoPixel.setPower(0);
-        sleep(1500);
+        sleep(25000);
 
 
 
@@ -264,16 +265,16 @@ public class RedRightPreloads extends LinearOpMode {
 
 
         pos3= drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(48.6, -33, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(46.8, -33.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos5= drive.trajectoryBuilder(pos3.end())
-                .back(4)
+                .back(6)
                 .build();
 
 
         pos4= drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(39, -65, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(39, -62, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -294,7 +295,7 @@ public class RedRightPreloads extends LinearOpMode {
         sleep(500);
         teleop.lift.Retract();
         teleop.lift.servoPixel.setPower(0);
-        sleep(1500);
+        sleep(25000);
 
 
 
