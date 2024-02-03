@@ -109,7 +109,7 @@ public class TeleOp extends LinearOpMode {
 
 
             if(gamepad2.y && liftrequest==false){
-                targetPosition=550;
+                targetPosition=1550;
                 liftRequest.reset();
                 liftrequest=true;
             }
@@ -119,13 +119,13 @@ public class TeleOp extends LinearOpMode {
                 liftrequest=false;
             }
             if(retractRequest.milliseconds()>2000 && retractrequest){
-                targetPosition=-250;
+                targetPosition=-150;
                 retractrequest=false;
             }
 
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.814);
-                lift.servoR.setPosition(0.814);
+                lift.servoL.setPosition(0.795);
+                lift.servoR.setPosition(0.795);
                 retractrequest=true;
             }
 
@@ -137,12 +137,12 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad1.touchpad){
-                targetPosition=targetPosition+30;
+                targetPosition=targetPosition+100;
             }
 
             if(gamepad2.right_trigger>0) {
                 intake.intakeMotor.setPower(1);
-                intake.intakeMotorRight.setPower(1);
+                intake.intakeMotorRight.setPower(-1);
                 lift.servoPixel.setPower(-1);
             }
 
