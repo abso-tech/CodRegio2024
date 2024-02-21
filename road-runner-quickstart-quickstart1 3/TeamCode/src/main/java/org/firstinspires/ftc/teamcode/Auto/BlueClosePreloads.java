@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Detection.ColorVisionProcessor;
 import org.firstinspires.ftc.teamcode.Detection.PropDetectionBlueClose;
 import org.firstinspires.ftc.teamcode.Detection.PropDetectionRedClose;
 import org.firstinspires.ftc.teamcode.Detection.TeamPropPipelineRed;
@@ -105,7 +106,7 @@ public class BlueClosePreloads extends LinearOpMode {
     public static double targetPosition = 0;
     TeamPropPipelineRed teamPropPieline = new TeamPropPipelineRed();
     VisionPortal portal;
-    PropDetectionBlueClose processor;
+    ColorVisionProcessor processor;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -116,7 +117,7 @@ public class BlueClosePreloads extends LinearOpMode {
         CASE cazul = CASE.right;
         cycle = hardwareMap.get(Servo.class, "cycle");
         cycle.setPosition(0.15);
-        processor = new PropDetectionBlueClose();
+        processor = new ColorVisionProcessor();
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .setCameraResolution(new android.util.Size(1280,720))
@@ -124,14 +125,12 @@ public class BlueClosePreloads extends LinearOpMode {
                 .addProcessor(processor)
                 .enableLiveView(true)
                 .build();
+        processor.setDetectionColor(ColorVisionProcessor.DetectionColor.BLUE);
 
         while (opModeInInit()) {
 
             telemetry.update();
-            telemetry.addData("Detection", processor.detection);
-            telemetry.addData("Sum left", processor.rightSum);
-            telemetry.addData("Middle sum", processor.middleSum);
-
+            telemetry.addData("Detection", processor.getAnalysis());
             telemetry.update();
             telemetry.update();
 
@@ -139,16 +138,7 @@ public class BlueClosePreloads extends LinearOpMode {
 
 
         if(opModeIsActive() && !isStopRequested()) {
-            if(processor.detection==3){
-                right();
-            }
 
-            if(processor.detection==2){
-                center();
-            }
-            if(processor.detection==1){
-                left();
-            }
         }
 
 

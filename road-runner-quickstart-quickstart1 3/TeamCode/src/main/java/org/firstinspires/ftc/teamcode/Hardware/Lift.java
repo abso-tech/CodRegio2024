@@ -35,26 +35,26 @@ public class Lift {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
-        servoL.setPosition(0.814);
-        servoR.setPosition(0.814);
+        servoL.setPosition(0.75);
+        servoR.setPosition(0.75);
 
 
 
     }
 
     public void preloadServo(){
-        servoL.setPosition(0.62);
-        servoR.setPosition(0.62);
+        servoL.setPosition(0.58);
+        servoR.setPosition(0.58);
     }
 
     public void RetractServo(){
-        servoL.setPosition(0.812);
-        servoR.setPosition(0.812);
+        servoL.setPosition(0.75);
+        servoR.setPosition(0.75);
     }
 
     public void Retract(){
-        liftLeft.setTargetPosition(-10);
-        liftRight.setTargetPosition(-10);
+        liftLeft.setTargetPosition(-100);
+        liftRight.setTargetPosition(-100);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -63,8 +63,8 @@ public class Lift {
         liftRight.setPower(1);
     }
 public void preload(){
-        liftLeft.setTargetPosition(280);
-        liftRight.setTargetPosition(280);
+        liftLeft.setTargetPosition(2500);
+        liftRight.setTargetPosition(2500);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -72,9 +72,10 @@ public void preload(){
         liftLeft.setPower(1);
         liftRight.setPower(1);
 }
+
     public void cycle(){
-        liftLeft.setTargetPosition(350);
-        liftRight.setTargetPosition(350);
+        liftLeft.setTargetPosition(3200);
+        liftRight.setTargetPosition(3200);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -126,8 +127,8 @@ public void preload(){
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
-        servoL.setPosition(0.795);
-        servoR.setPosition(0.795);
+        servoL.setPosition(0.71);
+        servoR.setPosition(0.71);
 
 
     }

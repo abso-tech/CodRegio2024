@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Detection.ColorVisionProcessor;
-import org.firstinspires.ftc.teamcode.Detection.PropDetectionRedFar;
+import org.firstinspires.ftc.teamcode.Detection.ColorVisionProcessorRight;
+import org.firstinspires.ftc.teamcode.Detection.PropDetectionBlueClose;
+import org.firstinspires.ftc.teamcode.Detection.PropDetectionRedClose;
 import org.firstinspires.ftc.teamcode.Detection.TeamPropPipelineRed;
 import org.firstinspires.ftc.teamcode.Hardware.PIDConstants;
 import org.firstinspires.ftc.teamcode.OpModes.TeleOp;
@@ -19,38 +19,52 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.Detection.PropPipeline;
+
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Detection.PropPipeline;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@Autonomous(name ="🛑RedLeft", group = "CENTERSTAGE")
+@Autonomous(name ="🟦BlueRightCycle", group = "CENTERSTAGE")
 
-public class RedLeft extends LinearOpMode {
+public class BlueRightCycle extends LinearOpMode {
 
     SampleMecanumDrive drive;
     TeleOp teleop = new TeleOp();
-    Pose2d startPose = new Pose2d(-39.2, -64, Math.toRadians(90));
+    Pose2d startPose = new Pose2d(-39.2, 64, Math.toRadians(270));
 
     Trajectory pos1;
+
+    Trajectory posforward;
     Trajectory pos2;
 
+    Trajectory posback;
     Trajectory pos3;
-
+    Trajectory pos10;
     Trajectory pos4;
     Trajectory pos5;
 
+    TrajectorySequence pos3right;
     Trajectory pos6;
     Trajectory pos7;
-    Trajectory posback;
     Trajectory pos8;
-
-    TrajectorySequence pos3right;
-
-    Trajectory pos10;
     Trajectory pos9;
     Trajectory posinspate;
     Trajectory posint;
@@ -73,24 +87,14 @@ public class RedLeft extends LinearOpMode {
     double cY = 0;
     double width = 0;
 
-    private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    /** MAKE SURE TO CHANGE THE FOV AND THE RESOLUTIONS ACCORDINGLY **/
-    private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
-    private static final double FOV = 40;
-
-    // Calculate the distance using the formula
-    public static final double objectWidthInRealWorldUnits = 3.75;  // Replace with the actual width of the object in real-world units
-    public static final double focalLength = 728;  // Replace with the focal length of the camera in pixels
 
 
-    enum Location{
+
+    enum Location {
         Left,
         Center,
         Right
     }
-
-
 
 
     public enum CASE {
@@ -99,60 +103,58 @@ public class RedLeft extends LinearOpMode {
         right
     }
 
-    int cazzz=2;
-    private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    int cazzz = 2;
     PropPipeline PropPipeline = new PropPipeline();
 
 
     public static double targetPosition = 0;
     TeamPropPipelineRed teamPropPieline = new TeamPropPipelineRed();
     VisionPortal portal;
-    PropDetectionRedFar processor;
+    ColorVisionProcessorRight processor;
     @Override
     public void runOpMode() throws InterruptedException {
 
         drive = new SampleMecanumDrive(hardwareMap);
         teleop.lift.initLiftAuto(hardwareMap);
         teleop.intake.intakeinit(hardwareMap);
-        teleop.airplane.initAirplane(hardwareMap);
         drive.setPoseEstimate(startPose);
         CASE cazul = CASE.right;
         cycle = hardwareMap.get(Servo.class, "cycle");
         cycle.setPosition(0.15);
-        processor = new PropDetectionRedFar();
+        processor = new ColorVisionProcessorRight();
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new android.util.Size(1280, 720))
+                .setCameraResolution(new android.util.Size(1280,720))
                 .enableLiveView(true)
                 .addProcessor(processor)
                 .enableLiveView(true)
                 .build();
-
+        processor.setDetectionColor(ColorVisionProcessorRight.DetectionColor.BLUE);
 
         while (opModeInInit()) {
-            telemetry.addData("case",processor.detection);
-            dashboard.setTelemetryTransmissionInterval(55);
+
+            telemetry.update();
+            telemetry.addData("Detection", processor.getAnalysis());
+            telemetry.update();
             telemetry.update();
 
         }
 
-        waitForStart();
 
-        if (opModeIsActive() && !isStopRequested()) {
+        if(opModeIsActive() && !isStopRequested()) {
 
-            if(processor.detection==1){
+            if(processor.getAnalysis()== ColorVisionProcessorRight.DetectionPosition.LEFT){
                 left();
             }
 
-            if(processor.detection==2){
+            if(processor.getAnalysis()== ColorVisionProcessorRight.DetectionPosition.CENTER){
                 center();
             }
 
-            if(processor.detection==3){
+            if(processor.getAnalysis()== ColorVisionProcessorRight.DetectionPosition.RIGHT){
                 right();
             }
         }
-
 
 
     }
@@ -161,32 +163,32 @@ public class RedLeft extends LinearOpMode {
     public void center(){
 
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-37, -35, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-35, 34.8, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(-46, -44, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-46, 44, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos3 = drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(-48, -17, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-48, 10, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos4 = drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(30, -17, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(30, 10, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         pos5 = drive.trajectoryBuilder(pos4.end())
-                .splineToConstantHeading(new Vector2d(50.8, -41), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(51.35, 32.8), Math.toRadians(0))
                 .addTemporalMarker(0.001,()->{
                     teleop.lift.preload();
                 })
-                .addTemporalMarker(2.2,()->{
+                .addTemporalMarker(2.1,()->{
                     teleop.lift.preloadServo();
                 })
                 .build();
 
         pos6 = drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(25, -17, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(25, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.001,()->{
                     teleop.lift.RetractServo();
                 })
@@ -196,7 +198,7 @@ public class RedLeft extends LinearOpMode {
                 .build();
 
         pos7 = drive.trajectoryBuilder(pos6.end())
-                .lineToLinearHeading(new Pose2d(-61.3, -17, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-59.7, 10.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -204,129 +206,7 @@ public class RedLeft extends LinearOpMode {
                 .forward(4)
                 .build();
         pos8 = drive.trajectoryBuilder(posback.end())
-                .lineToLinearHeading(new Pose2d(41, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.3,()->{
-                    exit();
-
-                })
-
-                .addTemporalMarker(3,()->{
-                   teleop.lift.cycle();
-                })
-                .build();
-
-
-
-        pos9 = drive.trajectoryBuilder(pos8.end())
-                .lineToLinearHeading(new Pose2d(49, -39.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(1,()->{
-                    teleop.lift.preloadServo();
-                })
-                .build();
-
-        pos10 = drive.trajectoryBuilder(pos9.end())
-                .lineToLinearHeading(new Pose2d(41, -30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.1,()->{
-                    teleop.lift.RetractServo();
-                })
-                .addTemporalMarker(1.5,()->{
-                    teleop.lift.Retract();
-                })
-                .build();
-
-
-
-
-        drive.followTrajectory(pos1);
-        drive.followTrajectory(pos2);
-        drive.followTrajectory(pos3);
-        drive.followTrajectory(pos4);
-        sleep(200);
-        drive.followTrajectory(pos5);
-        sleep(200);
-        teleop.lift.servoPixel.setPower(1);
-        sleep(700);
-        teleop.intake.intakeUAD.setPosition(0.325);
-        drive.followTrajectory(pos6);
-        drive.followTrajectory(pos7);
-        collect();
-        sleep(500);
-        stopintake();
-        sleep(300);
-        teleop.intake.intakeUAD.setPosition(0.35);
-        collect();
-        sleep(900);
-        teleop.intake.intakeUAD.setPosition(0.47);
-        collect();
-        drive.followTrajectory(pos8);
-        exit();
-        sleep(100);
-        collect();
-        sleep(400);
-        drive.followTrajectory(pos9);
-        teleop.lift.servoPixel.setPower(1);
-        sleep(700);
-        teleop.lift.RetractServo();
-        sleep(200);
-        teleop.lift.Retract();
-        drive.followTrajectory(pos10);
-       sleep(8000);
-
-
-
-
-
-    }
-
-
-    public void right(){
-
-        pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-28.7, -38, Math.toRadians(60)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(-46, -44, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        pos3 = drive.trajectoryBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(-44, -16, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-
-        pos4 = drive.trajectoryBuilder(pos3.end())
-                .lineToLinearHeading(new Pose2d(30, -14, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        pos5 = drive.trajectoryBuilder(pos4.end())
-                .splineToConstantHeading(new Vector2d(51, -46.5), Math.toRadians(0))
-                .addTemporalMarker(0.001,()->{
-                    teleop.lift.preload();
-                })
-                .addTemporalMarker(2.2,()->{
-                    teleop.lift.preloadServo();
-                })
-                .build();
-
-        pos6 = drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(25, -14.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.001,()->{
-                    teleop.lift.RetractServo();
-                })
-                .addTemporalMarker(1.5,()->{
-                    teleop.lift.Retract();
-                })
-                .build();
-
-        pos7 = drive.trajectoryBuilder(pos6.end())
-                .lineToLinearHeading(new Pose2d(-60.7, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-
-        posback = drive.trajectoryBuilder(pos7.end())
-                .forward(4)
-                .build();
-        pos8 = drive.trajectoryBuilder(posback.end())
-                .lineToLinearHeading(new Pose2d(41, -13, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(41, 10, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.3,()->{
                     exit();
 
@@ -340,14 +220,14 @@ public class RedLeft extends LinearOpMode {
 
 
         pos9 = drive.trajectoryBuilder(pos8.end())
-                .lineToLinearHeading(new Pose2d(49, -39.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(49.7, 33.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(1,()->{
                     teleop.lift.preloadServo();
                 })
                 .build();
 
         pos10 = drive.trajectoryBuilder(pos9.end())
-                .lineToLinearHeading(new Pose2d(41, -30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(42.5, 30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.1,()->{
                     teleop.lift.RetractServo();
                 })
@@ -367,7 +247,7 @@ public class RedLeft extends LinearOpMode {
         drive.followTrajectory(pos5);
         sleep(200);
         teleop.lift.servoPixel.setPower(1);
-        sleep(700);
+        sleep(850);
         teleop.intake.intakeUAD.setPosition(0.325);
         drive.followTrajectory(pos6);
         drive.followTrajectory(pos7);
@@ -398,41 +278,38 @@ public class RedLeft extends LinearOpMode {
 
 
 
-    }
 
+    }
 
     public void left(){
 
         pos1 = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-47, -38.5, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-29, 34.8, Math.toRadians(310)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         pos2 = drive.trajectoryBuilder(pos1.end())
-                .lineToLinearHeading(new Pose2d(-37, -44, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-44, 44, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        pos3right= drive.trajectorySequenceBuilder(pos2.end())
-                .lineToLinearHeading(new Pose2d(-35, -14, Math.toRadians(90)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(-35, -13.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos3 = drive.trajectoryBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(-46, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-
-
-        pos4 = drive.trajectoryBuilder(pos3right.end())
-                .lineToLinearHeading(new Pose2d(30, -17, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        pos4 = drive.trajectoryBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(30, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         pos5 = drive.trajectoryBuilder(pos4.end())
-                .splineToConstantHeading(new Vector2d(50.8, -35.5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(51.5, 39.1), Math.toRadians(0))
                 .addTemporalMarker(0.001,()->{
                     teleop.lift.preload();
                 })
-                .addTemporalMarker(2.2,()->{
+                .addTemporalMarker(2.1,()->{
                     teleop.lift.preloadServo();
                 })
                 .build();
 
         pos6 = drive.trajectoryBuilder(pos5.end())
-                .lineToLinearHeading(new Pose2d(25, -15, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(25, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.001,()->{
                     teleop.lift.RetractServo();
                 })
@@ -442,7 +319,7 @@ public class RedLeft extends LinearOpMode {
                 .build();
 
         pos7 = drive.trajectoryBuilder(pos6.end())
-                .lineToLinearHeading(new Pose2d(-61.4, -14.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-59.4, 10.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -450,7 +327,7 @@ public class RedLeft extends LinearOpMode {
                 .forward(4)
                 .build();
         pos8 = drive.trajectoryBuilder(posback.end())
-                .lineToLinearHeading(new Pose2d(41, -14.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(41, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.3,()->{
                     exit();
 
@@ -464,18 +341,140 @@ public class RedLeft extends LinearOpMode {
 
 
         pos9 = drive.trajectoryBuilder(pos8.end())
-                .lineToLinearHeading(new Pose2d(49, -39.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(50.1, 34.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(1,()->{
                     teleop.lift.preloadServo();
                 })
                 .build();
 
         pos10 = drive.trajectoryBuilder(pos9.end())
-                .lineToLinearHeading(new Pose2d(41, -30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(42.5, 30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.1,()->{
                     teleop.lift.RetractServo();
                 })
                 .addTemporalMarker(1.5,()->{
+                    teleop.lift.Retract();
+                })
+                .build();
+
+
+
+
+        drive.followTrajectory(pos1);
+        drive.followTrajectory(pos2);
+        drive.followTrajectory(pos3);
+        drive.followTrajectory(pos4);
+        sleep(200);
+        drive.followTrajectory(pos5);
+        sleep(200);
+        teleop.lift.servoPixel.setPower(1);
+        sleep(850);
+        teleop.intake.intakeUAD.setPosition(0.325);
+        drive.followTrajectory(pos6);
+        drive.followTrajectory(pos7);
+        collect();
+        sleep(500);
+        stopintake();
+        sleep(300);
+        teleop.intake.intakeUAD.setPosition(0.35);
+        collect();
+        sleep(900);
+        teleop.intake.intakeUAD.setPosition(0.47);
+        collect();
+        drive.followTrajectory(pos8);
+        exit();
+        sleep(100);
+        collect();
+        sleep(400);
+        drive.followTrajectory(pos9);
+        teleop.lift.servoPixel.setPower(1);
+        sleep(700);
+        teleop.lift.RetractServo();
+        sleep(200);
+        teleop.lift.Retract();
+        drive.followTrajectory(pos10);
+        sleep(8000);
+
+
+
+
+
+
+    }
+
+    public void right(){
+
+        pos1 = drive.trajectoryBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(-45.8, 39, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos2 = drive.trajectoryBuilder(pos1.end())
+                .lineToLinearHeading(new Pose2d(-35, 46, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos3right= drive.trajectorySequenceBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(-37, 11, Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(-37, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        pos4 = drive.trajectoryBuilder(pos3right.end())
+                .lineToLinearHeading(new Pose2d(30, 9, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        pos5 = drive.trajectoryBuilder(pos4.end())
+                .splineToConstantHeading(new Vector2d(52.15, 25), Math.toRadians(0))
+                .addTemporalMarker(0.001,()->{
+                    teleop.lift.preload();
+                })
+                .addTemporalMarker(2.1,()->{
+                    teleop.lift.preloadServo();
+                })
+                .build();
+
+        pos6 = drive.trajectoryBuilder(pos5.end())
+                .lineToLinearHeading(new Pose2d(25, 7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.001,()->{
+                    teleop.lift.RetractServo();
+                })
+                .addTemporalMarker(1.5,()->{
+                    teleop.lift.Retract();
+                })
+                .build();
+
+        pos7 = drive.trajectoryBuilder(pos6.end())
+                .lineToLinearHeading(new Pose2d(-59.6, 10.7, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+
+        posback = drive.trajectoryBuilder(pos7.end())
+                .forward(4.1)
+                .build();
+        pos8 = drive.trajectoryBuilder(posback.end())
+                .lineToLinearHeading(new Pose2d(41, 6.8, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.3,()->{
+                    exit();
+
+                })
+
+                .addTemporalMarker(3,()->{
+                    teleop.lift.cycle();
+                })
+                .build();
+
+
+
+        pos9 = drive.trajectoryBuilder(pos8.end())
+                .lineToLinearHeading(new Pose2d(50.21, 35.5, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(1,()->{
+                    teleop.lift.preloadServo();
+                })
+                .build();
+
+        pos10 = drive.trajectoryBuilder(pos9.end())
+                .lineToLinearHeading(new Pose2d(42.5, 30, Math.toRadians(0)),SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.1,()->{
+                    teleop.lift.RetractServo();
+                })
+                .addTemporalMarker(1,()->{
                     teleop.lift.Retract();
                 })
                 .build();
@@ -491,7 +490,7 @@ public class RedLeft extends LinearOpMode {
         drive.followTrajectory(pos5);
         sleep(200);
         teleop.lift.servoPixel.setPower(1);
-        sleep(700);
+        sleep(850);
         teleop.intake.intakeUAD.setPosition(0.325);
         drive.followTrajectory(pos6);
         drive.followTrajectory(pos7);
@@ -516,17 +515,15 @@ public class RedLeft extends LinearOpMode {
         sleep(200);
         teleop.lift.Retract();
         drive.followTrajectory(pos10);
+        sleep(100);
         sleep(8000);
 
 
 
 
 
+
     }
-
-
-
-
     public void collect (){
         teleop.intake.intakeMotor.setPower(0.6);
         teleop.intake.intakeMotorRight.setPower(-0.6);
@@ -542,8 +539,6 @@ public class RedLeft extends LinearOpMode {
         teleop.intake.intakeMotor.setPower(0);
         teleop.intake.intakeMotorRight.setPower(0);
     }
-
-
 
 
 

@@ -14,25 +14,24 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 @Config
-public class PropDetectionBlueClose implements VisionProcessor {
+public class PropDetectionRedFar implements VisionProcessor {
 
-    public int detection = 2;
+    public int detection = 1;
 
-    public static int leftRectX1 = 190, leftRectY1 = 220;
-    public static int leftRectX2 = 290, leftRectY2 = 350;
+    public static int rightRectX1 = 250, rightRectY1 = 350;
+    public static int rightRectX2 = 350, rightRectY2 = 450;
 
-    public static double rightThresh = 300000;
+    public static double rightThresh = 1200000;
     public double rightSum = 0;
 
-    public static int middleRectX1 = 600, middleRectY1 =350;
-    public static int middleRectX2 = 700, middleRectY2 = 480;
+    public static int middleRectX1 = 670, middleRectY1 = 350;
+    public static int middleRectX2 = 770, middleRectY2 = 450;
 
-
-    public static double middleThresh =300000;
+    public static double middleThresh = 900000;
     public double middleSum = 0;
 
-    public static int blueLowH = 100, blueLowS = 40, blueLowV = 0;
-    public static int blueHighH = 120, blueHighS = 180, blueHighV = 255;
+    public static int redLowH = 110, redLowS = 160, redLowV = 0;
+    public static int redHighH = 125, redHighS = 255, redHighV = 255;
 
     Mat workingMat = new Mat();
 
@@ -42,13 +41,13 @@ public class PropDetectionBlueClose implements VisionProcessor {
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
-        Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, workingMat, Imgproc.COLOR_BGR2HSV);
 
-        Rect rightRect = new Rect(new Point(leftRectX1, leftRectY1), new Point(leftRectX2, leftRectY2));
+        Rect rightRect = new Rect(new Point(rightRectX1, rightRectY1), new Point(rightRectX2, rightRectY2));
         Rect middleRect = new Rect(new Point(middleRectX1, middleRectY1), new Point(middleRectX2, middleRectY2));
 
-        Scalar lowThresh = new Scalar(blueLowH, blueLowS, blueLowV);
-        Scalar highThresh = new Scalar(blueHighH, blueHighS, blueHighV);
+        Scalar lowThresh = new Scalar(redLowH, redLowS, redLowV);
+        Scalar highThresh = new Scalar(redHighH, redHighS, redHighV);
 
         Core.inRange(workingMat, lowThresh, highThresh, workingMat);
 
@@ -58,7 +57,7 @@ public class PropDetectionBlueClose implements VisionProcessor {
         Imgproc.rectangle(frame, rightRect, new Scalar(0,255,0), 5);
         Imgproc.rectangle(frame, middleRect, new Scalar(0,255,0), 5);
 
-        if(rightSum >rightThresh && rightSum<1000000 )
+        if(rightSum > rightThresh)
             detection = 1;
         else if (middleSum > middleThresh)
             detection = 2;
@@ -68,7 +67,7 @@ public class PropDetectionBlueClose implements VisionProcessor {
 
         workingMat.release();
 
-        return null;
+        return detection;
     }
 
     @Override

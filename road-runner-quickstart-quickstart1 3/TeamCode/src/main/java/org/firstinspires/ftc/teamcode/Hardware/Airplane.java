@@ -11,8 +11,8 @@ public Servo AirplaneLaunch;
  public void initAirplane(HardwareMap hardwareMap) {
      AirplaneUAD = hardwareMap.get(Servo.class, "AirplaneUAD");
      AirplaneLaunch = hardwareMap.get(Servo.class, "AirplaneLaunch");
-     AirplaneUAD.setPosition(0.4);
-     AirplaneLaunch.setPosition(0);
+     AirplaneUAD.setPosition(0.2);
+     AirplaneLaunch.setPosition(0.5);
  }
 
 }

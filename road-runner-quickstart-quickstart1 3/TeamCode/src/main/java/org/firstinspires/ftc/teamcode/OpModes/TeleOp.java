@@ -51,6 +51,7 @@ public class TeleOp extends LinearOpMode {
         FALSE
     }
 
+    boolean ouuttakeon;
 
     public void runOpMode() throws InterruptedException {
         ElapsedTime liftRequest = new ElapsedTime();
@@ -69,6 +70,7 @@ public class TeleOp extends LinearOpMode {
         targetPosition=0;
         retractRequest.time();
         liftRequest.time();
+        ouuttakeon=false;
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -109,13 +111,13 @@ public class TeleOp extends LinearOpMode {
 
 
             if(gamepad2.y && liftrequest==false){
-                targetPosition=1550;
+                targetPosition=2700;
                 liftRequest.reset();
                 liftrequest=true;
             }
             if(liftRequest.milliseconds()>800 && liftrequest){
-                lift.servoL.setPosition(0.63);
-                lift.servoR.setPosition(0.63);
+                lift.servoL.setPosition(0.56);
+                lift.servoR.setPosition(0.56);
                 liftrequest=false;
             }
             if(retractRequest.milliseconds()>2000 && retractrequest){
@@ -123,9 +125,13 @@ public class TeleOp extends LinearOpMode {
                 retractrequest=false;
             }
 
+
+            if(gamepad1.y){
+                targetPosition=targetPosition-250;
+            }
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.795);
-                lift.servoR.setPosition(0.795);
+                lift.servoL.setPosition(0.75);
+                lift.servoR.setPosition(0.75);
                 retractrequest=true;
             }
 
@@ -134,18 +140,31 @@ public class TeleOp extends LinearOpMode {
                 intake.intakeMotor.setPower(0);
                 intake.intakeMotorRight.setPower(0);
                 lift.servoPixel.setPower(0);
+
+                intake.intakeUAD.setPosition(0.2);
             }
 
-            if(gamepad1.touchpad){
+
+            if(gamepad1.a){
+                targetPosition=800;
+            }
+            if(gamepad2.x){
                 targetPosition=targetPosition+100;
             }
+            
 
             if(gamepad2.right_trigger>0) {
-                intake.intakeMotor.setPower(1);
-                intake.intakeMotorRight.setPower(-1);
+                intake.intakeMotor.setPower(0.7);
+                intake.intakeMotorRight.setPower(-0.7);
                 lift.servoPixel.setPower(-1);
+                intake.intakeUAD.setPosition(0.44);
             }
 
+
+
+            if(gamepad1.dpad_right){
+                airplane.AirplaneUAD.setPosition(0.2);
+            }
             if(gamepad2.left_trigger>0){
                 intake.intakeMotor.setPower(-1);
                 intake.intakeMotorRight.setPower(-1);
@@ -155,14 +174,15 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad2.b){
                 lift.servoPixel.setPower(1);
+                ouuttakeon=true;
             }
 
             if(gamepad1.dpad_down){
-                airplane.AirplaneUAD.setPosition(0.25);
+                airplane.AirplaneUAD.setPosition(0.3);
             }
 
             if(gamepad1.dpad_left){
-                airplane.AirplaneLaunch.setPosition(0.5);
+                airplane.AirplaneLaunch.setPosition(0);
             }
 
             if(gamepad2.dpad_up){
