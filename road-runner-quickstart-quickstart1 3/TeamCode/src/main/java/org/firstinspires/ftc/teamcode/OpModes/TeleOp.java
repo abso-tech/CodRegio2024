@@ -27,10 +27,11 @@ public class TeleOp extends LinearOpMode {
 
     private double lastError = 0;
     private double integralSum = 0;
-    public static double Kp = 0.002;
-    public static double KpLeft = 0.002;
 
-    boolean slowForwards, slowBackwards;
+    public static double Kp = 0.0045; //pid lift
+
+    boolean slowForwards;
+    boolean slowBackwards;
 
     double forward, strafe, rotate;
     double  slowRotateRight, slowRotateLeft ;
@@ -43,7 +44,6 @@ public class TeleOp extends LinearOpMode {
     public Horizontal intake = new Horizontal();
     public  Airplane airplane = new Airplane();
     Hanging hang = new Hanging();
-    Servo cycle;
     public Lift lift = new Lift();
     enum State {
         INIT,
@@ -60,11 +60,8 @@ public class TeleOp extends LinearOpMode {
         retractrequest=false;
         drive.initDrivetrain(hardwareMap);
         lift.initLiftTeleOp(hardwareMap);
-        hang.initHang(hardwareMap);
         intake.intakeinit(hardwareMap);
         airplane.initAirplane(hardwareMap);
-        cycle = hardwareMap.get(Servo.class,"cycle" );
-        cycle.setPosition(0.15);
         TelemetryPacket packet = new TelemetryPacket();
         dashboard.setTelemetryTransmissionInterval(25);
         targetPosition=0;
@@ -86,8 +83,6 @@ public class TeleOp extends LinearOpMode {
             forward = gamepad1.right_stick_y;
             strafe = -gamepad1.left_stick_x;
             rotate = gamepad1.right_stick_x;
-            slowBackwards=gamepad1.left_bumper;
-            slowForwards=gamepad1.right_bumper;
 
             if (slowBackwards) {
                 forward = 0.15;
@@ -111,7 +106,7 @@ public class TeleOp extends LinearOpMode {
 
 
             if(gamepad2.y && liftrequest==false){
-                targetPosition=2700;
+                targetPosition=1600;
                 liftRequest.reset();
                 liftrequest=true;
             }
@@ -120,21 +115,21 @@ public class TeleOp extends LinearOpMode {
                 lift.servoR.setPosition(0.56);
                 liftrequest=false;
             }
-            if(retractRequest.milliseconds()>2000 && retractrequest){
-                targetPosition=-150;
-                retractrequest=false;
-            }
 
 
             if(gamepad1.y){
                 targetPosition=targetPosition-250;
             }
+
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.75);
-                lift.servoR.setPosition(0.75);
+                lift.servoL.setPosition(0.73);
+                lift.servoR.setPosition(0.73);
                 retractrequest=true;
             }
-
+            if(retractRequest.milliseconds()>1500 && retractrequest){
+                targetPosition=-50;
+                retractrequest=false;
+            }
 
             if(gamepad2.touchpad){
                 intake.intakeMotor.setPower(0);
@@ -145,19 +140,23 @@ public class TeleOp extends LinearOpMode {
             }
 
 
+
+
             if(gamepad1.a){
-                targetPosition=800;
+                targetPosition=300;
             }
-            if(gamepad2.x){
-                targetPosition=targetPosition+100;
+            if(gamepad1.right_bumper){
+                targetPosition=targetPosition+70;
             }
-            
+            if(gamepad1.left_bumper){
+                targetPosition=targetPosition-40;
+            }
 
             if(gamepad2.right_trigger>0) {
-                intake.intakeMotor.setPower(0.7);
+                intake.intakeMotor.setPower(-0.7);
                 intake.intakeMotorRight.setPower(-0.7);
                 lift.servoPixel.setPower(-1);
-                intake.intakeUAD.setPosition(0.44);
+                intake.intakeUAD.setPosition(0.42);
             }
 
 
@@ -166,8 +165,8 @@ public class TeleOp extends LinearOpMode {
                 airplane.AirplaneUAD.setPosition(0.2);
             }
             if(gamepad2.left_trigger>0){
-                intake.intakeMotor.setPower(-1);
-                intake.intakeMotorRight.setPower(-1);
+                intake.intakeMotor.setPower(1);
+                intake.intakeMotorRight.setPower(1);
                 lift.servoPixel.setPower(0);
             }
 
@@ -185,9 +184,21 @@ public class TeleOp extends LinearOpMode {
                 airplane.AirplaneLaunch.setPosition(0);
             }
 
-            if(gamepad2.dpad_up){
-                hang.LeftHang.setPosition(0);
-                hang.RightHang.setPosition(0);
+
+            if(gamepad2.dpad_down){
+               lift.rotation.setPosition(0.49);
+            }
+
+
+            if(gamepad2.dpad_right){
+                lift.rotation.setPosition(0.62);
+
+            }
+
+
+            if(gamepad2.dpad_left){
+                lift.rotation.setPosition(0.35);
+
             }
 
 

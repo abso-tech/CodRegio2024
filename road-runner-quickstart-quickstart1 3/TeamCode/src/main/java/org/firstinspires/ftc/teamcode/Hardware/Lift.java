@@ -10,6 +10,8 @@ public class Lift {
 
     public CRServo servoPixel;
     public Servo servoL;
+
+    public Servo rotation;
     public Servo servoR;
     public DcMotorEx liftLeft;
     public DcMotorEx liftRight;
@@ -26,6 +28,7 @@ public class Lift {
         servoPixel = hardwareMap.get(CRServo.class,"servoPixel" );
         servoL = hardwareMap.get(Servo.class,"servoL" );
         servoR = hardwareMap.get(Servo.class,"servoR" );
+        rotation = hardwareMap.get(Servo.class,"rotation" );
         liftRight = hardwareMap.get(DcMotorEx.class, "liftRight");
         liftLeft = hardwareMap.get(DcMotorEx.class, "liftLeft");
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -37,6 +40,7 @@ public class Lift {
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
         servoL.setPosition(0.75);
         servoR.setPosition(0.75);
+        rotation.setPosition(0.5);
 
 
 
@@ -53,8 +57,8 @@ public class Lift {
     }
 
     public void Retract(){
-        liftLeft.setTargetPosition(-100);
-        liftRight.setTargetPosition(-100);
+        liftLeft.setTargetPosition(-250);
+        liftRight.setTargetPosition(-250);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -63,8 +67,8 @@ public class Lift {
         liftRight.setPower(1);
     }
 public void preload(){
-        liftLeft.setTargetPosition(2500);
-        liftRight.setTargetPosition(2500);
+        liftLeft.setTargetPosition(1800);
+        liftRight.setTargetPosition(1800);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -74,8 +78,8 @@ public void preload(){
 }
 
     public void cycle(){
-        liftLeft.setTargetPosition(3200);
-        liftRight.setTargetPosition(3200);
+        liftLeft.setTargetPosition(2000);
+        liftRight.setTargetPosition(2000);
 
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -116,6 +120,8 @@ public void preload(){
         servoPixel = hardwareMap.get(CRServo.class,"servoPixel" );
         servoL = hardwareMap.get(Servo.class,"servoL" );
         servoR = hardwareMap.get(Servo.class,"servoR" );
+        rotation = hardwareMap.get(Servo.class,"rotation" );
+
         liftRight = hardwareMap.get(DcMotorEx.class, "liftRight");
         liftLeft = hardwareMap.get(DcMotorEx.class, "liftLeft");
 
@@ -127,8 +133,9 @@ public void preload(){
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setDirection(DcMotorEx.Direction.REVERSE);
-        servoL.setPosition(0.71);
-        servoR.setPosition(0.71);
+        servoL.setPosition(0.73);
+        servoR.setPosition(0.73);
+        rotation.setPosition(0.49);
 
 
     }

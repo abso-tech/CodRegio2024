@@ -40,7 +40,7 @@ public class ColorVisionProcessorRight implements VisionProcessor {
      */
     static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,180 * 2);
     static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(240 * 2,170 * 2);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(400 * 2,180 * 2);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(420 * 2,200 * 2);
     static final int REGION_WIDTH = 40 * 2;
     static final int REGION_HEIGHT = 40 * 2;
 
