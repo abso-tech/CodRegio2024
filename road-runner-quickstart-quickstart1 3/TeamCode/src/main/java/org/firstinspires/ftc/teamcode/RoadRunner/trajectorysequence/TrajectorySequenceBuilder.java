@@ -233,6 +233,10 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineTo(endPosition, endHeading, currentVelConstraint, currentAccelConstraint));
     }
 
+//    public TrajectorySequenceBuilder splineTo(Vector2d endPosition,  double endHeading,boolean reversed) {
+//        return addPath(() -> currentTrajectoryBuilder.splineTo(endPosition, endHeading, currentVelConstraint, currentAccelConstraint));
+//    }
+
     public TrajectorySequenceBuilder splineTo(
             Vector2d endPosition,
             double endHeading,

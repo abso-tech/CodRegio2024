@@ -153,8 +153,8 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad2.right_trigger>0) {
-                intake.intakeMotor.setPower(-0.7);
-                intake.intakeMotorRight.setPower(-0.7);
+                intake.intakeMotor.setPower(-1);
+                intake.intakeMotorRight.setPower(-1);
                 lift.servoPixel.setPower(-1);
                 intake.intakeUAD.setPosition(0.42);
             }

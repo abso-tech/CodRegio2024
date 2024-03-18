@@ -84,7 +84,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(0.5)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(0.5)), 0.3);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -160,6 +160,15 @@ public class SampleMecanumDrive extends MecanumDrive {
                 MAX_ANG_VEL, MAX_ANG_ACCEL
         );
     }
+
+//    public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose, boolean reversed) {
+//        return new TrajectorySequenceBuilder(
+//                startPose,
+//                reversed,
+//                VEL_CONSTRAINT, ACCEL_CONSTRAINT,
+//                MAX_ANG_VEL, MAX_ANG_ACCEL
+//        );
+//    }
 
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(

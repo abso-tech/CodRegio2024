@@ -60,7 +60,6 @@ public class RedLeft extends LinearOpMode {
 
     CASE Case;
 
-    Servo cycle;
     double integralSum = 0;
     double Kp = PIDConstants.Kp;
     double Ki = PIDConstants.Ki;
@@ -117,8 +116,6 @@ public class RedLeft extends LinearOpMode {
         teleop.airplane.initAirplane(hardwareMap);
         drive.setPoseEstimate(startPose);
         CASE cazul = CASE.right;
-        cycle = hardwareMap.get(Servo.class, "cycle");
-        cycle.setPosition(0.15);
         processor = new PropDetectionRedFar();
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
