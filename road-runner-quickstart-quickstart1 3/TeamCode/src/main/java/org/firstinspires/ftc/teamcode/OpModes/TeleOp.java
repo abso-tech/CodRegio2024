@@ -122,8 +122,8 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad2.a && retractrequest==false){
-                lift.servoL.setPosition(0.73);
-                lift.servoR.setPosition(0.73);
+                lift.servoL.setPosition(0.75);
+                lift.servoR.setPosition(0.75);
                 retractrequest=true;
             }
             if(retractRequest.milliseconds()>1500 && retractrequest){
